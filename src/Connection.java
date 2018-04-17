@@ -40,7 +40,7 @@ public class Connection implements Runnable
 			else{
 				for(int i = 0; i<=connections.size(); i++) {
 			
-					if(connections.contains(user)) {
+					if(connections.get(i).containsKey(user)) {
 						handle.userNameTaken();
 					}
 					else {
