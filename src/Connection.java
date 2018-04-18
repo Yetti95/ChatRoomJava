@@ -43,6 +43,7 @@ public class Connection implements Runnable
 					if(connections.get(i).containsKey(user)) {
 						//this needs to send back a error code for username taken and close the connect
 						handle.userNameTaken();
+						handle.closeConnection();
 					
 					}
 					else {

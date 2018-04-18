@@ -1,6 +1,13 @@
+import java.util.*;
+import java.net.*;
 
 public class BroadcastThread implements Runnable 
 { 
+	private List<Map<String, Socket>> connections;
+	
+	public BroadcastThread(List<Map<String, Socket>> connections) {
+		this.connections = connections;
+	}
     public void run() { 
         while (true) { 
             // sleep for 1/10th of a second 

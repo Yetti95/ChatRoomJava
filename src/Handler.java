@@ -17,8 +17,8 @@ public class Handler {
 	private String message;
 	private int length;
 	private Date currUTC; //Format YYYY-MM-DD-HH-MM-SS
-
 	private boolean disconnect;
+	
 	/*
 	 * I'm not sure if this JSONObject has what we want
 	 * it only reads from files and not byte streams
@@ -136,6 +136,7 @@ public class Handler {
 		String dcReturn = new String("{  add return" + "'tab' \" errorCode \" : " + "\"some int that means something\"");
 		JSONObject returnDC = new JSONObject(dcReturn);
 		client.sendShit(returnDC);
+		client.close();
 	}
 
 

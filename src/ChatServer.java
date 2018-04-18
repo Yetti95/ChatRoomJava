@@ -26,8 +26,11 @@ public class ChatServer {
                 ServerSocket server = new ServerSocket(DEFAULT_PORT);               
                 System.out.println("Waiting for connections ....");
                 Socket client = server.accept();                           
-                Connection connection = new Connection(client, connections);                    
+                Connection connection = new Connection(client, connections);   
+                BroadcastThread bt = new BroadcastThread(connections);
                 exec.execute(connection);
+                //needs to be a way to pass a vector around through all of it so the messages can be broardcasted
+                exec.execute(bt);
                                    
             }
             catch (Exception e){
