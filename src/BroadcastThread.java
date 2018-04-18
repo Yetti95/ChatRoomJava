@@ -4,7 +4,7 @@ import java.net.*;
 public class BroadcastThread implements Runnable 
 { 
 	private List<Map<String, Socket>> connections;
-	
+	private String lastMessage;
 	public BroadcastThread(List<Map<String, Socket>> connections) {
 		this.connections = connections;
 	}

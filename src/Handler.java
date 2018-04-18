@@ -29,7 +29,7 @@ public class Handler {
 			in = new BufferedInputStream(client.getInputStream());
 			out = new BufferedOutputStream(client.getOutputStream());
 			byte[] byteStream = in.readAllBytes();
-			JSONTokener token = JSONTokener(in.read());
+			JSONTokener token = new JSONTokener(in.read());
 			json = JSONObject.wrap(temp);
 			
 			//set to JSONObject based off key pairs
