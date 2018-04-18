@@ -11,6 +11,11 @@ public class ChatServer {
     private static final Executor exec = Executors.newCachedThreadPool();
     
     
+    //check server socket object to see what it acutally creates
+    //is it another link to the client or does it open a port to listen to
+    //should the server socket try to connect in the while?
+    //PRESISTENT CONNECTIONS NEEDED
+    
     public static void main(String args[]){
     	List<Map<String, Socket>> connections = null;
         while(true){
