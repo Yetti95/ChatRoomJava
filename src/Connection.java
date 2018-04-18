@@ -1,10 +1,8 @@
 import java.net.*;
 import java.io.*;
 import org.json.*;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.nio.charset.StandardCharsets;
+import java.util.*;
+//import java.nio.charset.StandardCharsets;
 
 
 public class Connection implements Runnable
@@ -15,11 +13,12 @@ public class Connection implements Runnable
 
 	private Socket client;
 	private List<Map<String, Socket>> connections;
-	//private Pair[] con;
-
+	private Calendar date;
+	
 	public Connection(Socket client, List<Map<String, Socket>> connections) {
 		this.client = client;
 		this.connections = connections;
+		date = Calendar.getInstance();
 	}
 
     /**
@@ -27,13 +26,14 @@ public class Connection implements Runnable
      */
 	public void run() {
 		try {
+			
 			Handler handle = new Handler();
 			String user = handle.getJSONRequestUser();
-			Map<String, Socket> clientpair = null;
-			//			Map<String, Socket> clientpair = (Map<String, Socket>) clientpair.put(user, client);
+			Map<String, Socket> clientpair = new HashMap<String, Socket>();
 			clientpair.put(user, client);
+			
 			if(connections.isEmpty()) {
-//				Map<String, Socket> clientpair = new Map<String, Socket>();
+				
 				connections.add(clientpair);
 				
 			}
@@ -46,13 +46,7 @@ public class Connection implements Runnable
 					else {
 						connections.add(clientpair);
 					}
-				}
-//			if(!connections.contains(user)) {
-//				Map<String, Socket> clientPair = new Map<U>
-//				connections.add(new Map<user, client>)
-//			}
-//			else {
-//				
+				}	
 			}
 			
 		} catch(Exception e) {
