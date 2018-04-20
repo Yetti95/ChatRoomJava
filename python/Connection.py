@@ -4,8 +4,9 @@ import json
 connectionsList = {'username', 'client'}
 request = json
 
-def run(self, Socket):
+def run(self, Socket, connectionList):
     client = Socket
+    self.connectionsList = connectionsList
     handler = Handler.__init__(client)
     handler.read()
     username = handler.getUsername()
@@ -22,11 +23,12 @@ def run(self, Socket):
             return
         else:
             self.connectionsList.append((username, client))
+            self.sendMessage(handler.onJoin())
 
-     #here is where we need to check against a vector to see if the message being sent is a new message or not
-    #I think the best way to do that is have a tuple of (username, message)
-    #if (handler.getUsername(), handler.getMessage) is previousTuple then do nothing
-    #else send the message to broadcast
+    # here is where we need to check against a vector to see if the message being sent is a new message or not
+    # I think the best way to do that is have a tuple of (username, message)
+    # if (handler.getUsername(), handler.getMessage) is previousTuple then do nothing
+    # else send the message to broadcast
 
 
 
@@ -44,4 +46,3 @@ def sendMessage(self, JSON):
 
 
     return
-

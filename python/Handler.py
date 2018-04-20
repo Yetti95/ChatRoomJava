@@ -1,5 +1,6 @@
 import json
 import socket
+import datetime
 
 client = socket  # type: object
 username = ''
@@ -24,7 +25,7 @@ def toJSON(self, String):
 
 #parses the data in regular values
 def toString(self, JSON):
-    newMessage = json.loads(JSON)
+    newMessage = json.loads(JSON, 'utf-8')
     if 'username' in newMessage:
         self.username = newMessage['username']
     else :
@@ -35,7 +36,7 @@ def toString(self, JSON):
             if 'dm' in newMessage:
                 self.dm = newMessage['dm']
                 self.message = newMessage['message']
-                self.length = newMessage['length']
+                self.length = int(newMessage['length'])
                 self.date = newMessage['date']
             else:
                 if 'disconnected' in newMessage:
@@ -66,6 +67,16 @@ def getLength(self):
 def getDate(self):
     return self.date
 
+def setDate(self):
+    #YYYY-MM-DD-HH-mm-SS
+    year = datetime.date.year
+    month = datetime.date.month
+    day = datetime.date.day
+    hour = datetime.time.hour
+    minute = datetime.time.minute
+    second = datetime.time.second
+
+    self.date = '%s-%s-%s-%s-%s-%s', year, month, day, hour, minute, second
 
 def nameTake(self):
     self.errorCode = 1
@@ -77,4 +88,21 @@ def nameTake(self):
     }
     '''
     status = json.loads(returnStatus, 'utf-8')
+    return status
+
+#this compiles the response to someone joining the chat room
+
+def onJoin(self):
+    self.setDate()
+    returnStatus = '''
+    {
+        'dm' : ,
+        'message' : '%s has entered the chat'
+        'length' : '$d'
+        'date'  :   '%s'
+        
+    }
+    ''', self.username, self.length, self.date
+    status = json.loads(returnStatus, 'utf-8')
+    #should this return string or json?
     return status
