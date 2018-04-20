@@ -67,6 +67,9 @@ def getLength(self):
 def getDate(self):
     return self.date
 
+def setLength(self, message):
+    self.length = len(message)
+
 def setDate(self):
     #YYYY-MM-DD-HH-mm-SS
     year = datetime.date.year
@@ -77,6 +80,21 @@ def setDate(self):
     second = datetime.time.second
 
     self.date = '%s-%s-%s-%s-%s-%s', year, month, day, hour, minute, second
+
+def messageToJSON(self, (username, message)):
+    self.username, self.message = (username, message)
+    returnString= '''
+    {
+        'dm' = '',
+        'message' = %s,
+        'length' = %d,
+        'date' = %s
+    }
+    ''', self.message, self.setLength(self.message), self.setDate()
+
+    return self.toJSON(returnString)
+
+
 
 def nameTake(self):
     self.errorCode = 1

@@ -1,8 +1,10 @@
 import Handler
 import json
+import Broadcast
 
 connectionsList = {'username', 'client'}
 request = json
+previousMessage = ()
 
 def run(self, Socket, connectionList):
     client = Socket
@@ -11,24 +13,32 @@ def run(self, Socket, connectionList):
     handler.read()
     username = handler.getUsername()
 
-    #adds to our client to the list of connections
+    #adds our client to the list of connections
     if(self.connectionsList.count == 0):
         self.connectionsList.append((username, client))
     else:
-        #we do not allow multiple of the same username
-        if(self.connectionsList.__contains__(username)):
+        if username is not '':
 
-            self.request = handler.nameTaken() #type: JSON
-            self.sendMessage(self.request)
-            return
-        else:
-            self.connectionsList.append((username, client))
-            self.sendMessage(handler.onJoin())
+            #we do not allow multiple of the same username
+            if(self.connectionsList.__contains__(username)):
+
+                self.request = handler.nameTaken() #type: JSON
+                self.sendMessage(self.request)
+                return
+            else:
+                self.connectionsList.append((username, client))
+                self.sendMessage(handler.onJoin())
+
 
     # here is where we need to check against a vector to see if the message being sent is a new message or not
     # I think the best way to do that is have a tuple of (username, message)
     # if (handler.getUsername(), handler.getMessage) is previousTuple then do nothing
     # else send the message to broadcast
+    if (handler.getUsername(), handler.getMessage()) is not previousMessage:
+        message = (handler.getUsername(), handler.getMessage())
+        Broadcast.setMessage(message)
+        self.previousMessage = message
+
 
 
 
@@ -42,7 +52,7 @@ def run(self, Socket, connectionList):
     return
 
 def sendMessage(self, JSON):
-    #this will take a json object and send it the client
+    #this will take a json object and send it the bt
 
 
     return
