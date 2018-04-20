@@ -1,3 +1,5 @@
 
 *.class
 *.prefs
+*.xml
+*.iml
