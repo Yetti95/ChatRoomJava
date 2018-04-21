@@ -4,7 +4,7 @@ import socket
 import sys
 import Broadcast
 import Connection
-from thread import *
+from threading
 
 #class ChatServer:
 HOST = ''
@@ -17,9 +17,10 @@ serverSocket.listen(10)
 connectionList = {}
 while True:
     client, client_addressess = serverSocket.accept()
-    addressess[client] = client_addressess
-    start_new_thread(target=Connection(client, connectionList), args=(client,)).start()
-    start_new_thread(target=Broadcast(connectionList)).start()
+    #What is addressess? what does it do?
+    #addressess[client] = client_addressess
+    t = threading.thread(target=)
+        #start_new_thread(target=Broadcast(connectionList)).start()
 
 
 

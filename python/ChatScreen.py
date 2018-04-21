@@ -17,11 +17,12 @@ server.connect((IP_address, Port))
 
 request = '''
         {
-            'username' : ''', username, '''
+            'username' : %s
         }
     
-    '''
-server.send(json.loads(request, 'utf-8'))
+    ''', username
+temp = json.dumps(request)
+server.send(temp)
 
 
 #we need a seperate handler I think

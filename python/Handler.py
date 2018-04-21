@@ -25,7 +25,7 @@ def toJSON(self, String):
 
 #parses the data in regular values
 def toString(self, JSON):
-    newMessage = json.loads(JSON, 'utf-8')
+    newMessage = json.loads(JSON)
     if 'username' in newMessage:
         self.username = newMessage['username']
     else :
