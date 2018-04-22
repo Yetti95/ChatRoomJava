@@ -2,6 +2,7 @@ import socket
 import select
 import sys
 import json
+import Handler
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if len(sys.argv) != 3:
@@ -13,7 +14,7 @@ IP_address = str(sys.argv[1])
 Port = 1134
 username = str(sys.argv[2])
 server.connect((IP_address, Port))
-
+handle = Handler
 
 request = '''
         {
@@ -45,10 +46,14 @@ while True:
     for socks in read_sockets:
         if socks == server:
             message = socks.recv(2048)
-            print message
+            handle.toString(handle, message)
+            sys.stdout.write(handle.getSender(handle))
+            sys.stdout.write(handle.getMessage(handle))
+            sys.stdout.flush()
         else:
             message = sys.stdin.readline()
-            server.send(message)
+            jsonMessage = handle.messageToJSON(handle, username, message)
+            server.send(jsonMessage)
             sys.stdout.write("<You>")
             sys.stdout.write(message)
             sys.stdout.flush()

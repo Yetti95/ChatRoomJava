@@ -11,16 +11,17 @@ dm = ''
 message = ''
 length = 0
 date = ''
+sender = ''
 
 def __init__(self, Socket):
     self.client = Socket
 
 def read(self):
     temp = self.client.recv(2048)
-    self.toString(self.toJSON(temp))
+    self.toString(self, temp)
 
 def toJSON(self, String):
-    messageObj = json.dumps(String, str='utf-8')
+    messageObj = json.dumps(String)
     return messageObj
 
 #parses the data in regular values
@@ -35,6 +36,7 @@ def toString(self, JSON):
         else:
             if 'dm' in newMessage:
                 self.dm = newMessage['dm']
+                self.sender = newMessage['sender']
                 self.message = newMessage['message']
                 self.length = int(newMessage['length'])
                 self.date = newMessage['date']
@@ -81,18 +83,20 @@ def setDate(self):
 
     self.date = '%s-%s-%s-%s-%s-%s', year, month, day, hour, minute, second
 
-def messageToJSON(self, (username, message)):
-    self.username, self.message = (username, message)
+def messageToJSON(self, username, message):
+    self.username = username
+    self.message = message
     returnString= '''
     {
         'dm' = '',
         'message' = %s,
+        'sender' = %s,
         'length' = %d,
         'date' = %s
     }
-    ''', self.message, self.setLength(self.message), self.setDate()
+    ''', self.message, self.sender, self.setLength(self, self.message), self.setDate(self)
 
-    return self.toJSON(returnString)
+    return self.toJSON(self, returnString)
 
 
 
@@ -111,7 +115,7 @@ def nameTake(self):
 #this compiles the response to someone joining the chat room
 
 def onJoin(self):
-    self.setDate()
+    self.setDate(self)
     returnStatus = '''
     {
         'dm' : ,
@@ -121,6 +125,6 @@ def onJoin(self):
         
     }
     ''', self.username, self.length, self.date
-    status = json.loads(returnStatus, 'utf-8')
+    status = json.dumps(returnStatus)
     #should this return string or json?
     return status

@@ -6,38 +6,36 @@ connectionsList = {'username', 'client'}
 request = json
 previousMessage = ()
 
-def run(self, Socket, connectionList):
+def run(Socket, connectionList):
     client = Socket
-    self.connectionsList = connectionsList
-    handler = Handler.__init__(client)
-    handler.read()
-    username = handler.getUsername()
+    handler = Handler
+    handler.__init__(handler, client)
+    handler.read(handler)
+    username = handler.getUsername(handler)
 
     #adds our client to the list of connections
-    if(self.connectionsList.count == 0):
-        self.connectionsList.append((username, client))
+    if(connectionsList.__len__() == 0):
+        connectionsList.append((username, client))
     else:
         if username is not '':
 
             #we do not allow multiple of the same username
-            if(self.connectionsList.__contains__(username)):
+            if(connectionsList.__contains__(username)):
 
-                self.request = handler.nameTaken() #type: JSON
-                self.sendMessage(self.request)
+                request = handler.nameTaken(handler) #type: JSON
+                client.send(request)
                 return
             else:
-                self.connectionsList.append((username, client))
-                self.sendMessage(handler.onJoin())
+                connectionsList.append((username, client))
+                client.send(handler.onJoin(handler))
 
 
     # here is where we need to check against a vector to see if the message being sent is a new message or not
     # I think the best way to do that is have a tuple of (username, message)
     # if (handler.getUsername(), handler.getMessage) is previousTuple then do nothing
     # else send the message to broadcast
-    if (handler.getUsername(), handler.getMessage()) is not previousMessage:
-        message = (handler.getUsername(), handler.getMessage())
-        Broadcast.setMessage(message)
-        self.previousMessage = message
+    #message = (handler.getUsername(handler), handler.getMessage(handler))
+    #Broadcast.setMessage(message)
 
 
 
@@ -46,13 +44,12 @@ def run(self, Socket, connectionList):
     #I think dm will be hard. it is extra credit
     #if handler.getDm() not empty then send to individual clients based on @username
     #else do nothing
-
-
-
-    return
-
-def sendMessage(self, JSON):
-    #this will take a json object and send it the bt
+    if handler.getDM(handler) is not '':
+        if connectionList.conations(handler.getDM(handler)):
+            toClient = connectionList(handler.getDM(handler))
+            toClient.send(handler.messageToJSON(handler, handler.getUsername(handler), handler.getMessage(handler)))
 
 
     return
+
+

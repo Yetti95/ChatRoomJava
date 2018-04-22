@@ -4,7 +4,7 @@ import socket
 import sys
 import Broadcast
 import Connection
-from threading
+import threading
 
 #class ChatServer:
 HOST = ''
@@ -15,12 +15,17 @@ serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 serverSocket.bind((HOST, PORT))
 serverSocket.listen(10)
 connectionList = {}
+broad = Broadcast
+bt = threading.Thread(target=broad.run, args=(broad, connectionList,))
+bt.start()
+
 while True:
     client, client_addressess = serverSocket.accept()
     #What is addressess? what does it do?
-    #addressess[client] = client_addressess
-    t = threading.thread(target=)
-        #start_new_thread(target=Broadcast(connectionList)).start()
+    con = Connection
+    t = threading.Thread(target=con.run, args=(client, connectionList))
+    t.start()
+    #start_new_thread(target=Broadcast(connectionList)).start()
 
 
 
