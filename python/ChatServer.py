@@ -62,8 +62,9 @@ def clientthread(conn, addr):
                     username = jsonObject['username']
                     if list_of_clients.__contains__(username):
                         errorCode = 1
-                        conn.send(json.dumps("{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode))
-                        conn.close()
+                        temp = "{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode
+                        conn.send(json.dumps(temp))
+                        #conn.close()
                     else:
                         broadcast(json.dumps("{ 'dm' = '', 'message' = '%s has entered the chat', 'sender' = '', 'length' = '%d', 'date' = '%s' }", username, len((username + 'has entered the chat')), now.strftime("%Y-%m-%d %H:%M:%S")))
                 else :
@@ -92,10 +93,7 @@ def clientthread(conn, addr):
                                       username, len(message), now.strftime("%Y-%m-%d %H:%M:%S")), conn)
                             remove(conn)
 
-            except:
-                errorCode = 2
-                conn.send(json.dumps("{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode))
-                conn.close()
+            except Exception:
                 continue
 
 """Using the below function, we broadcast the message to all
@@ -140,6 +138,7 @@ while True:
     conn which is a socket object for that user, and addr 
     which contains the IP address of the client that just 
     connected"""
+
     conn, addr = server.accept()
 
     """Maintains a list of clients for ease of broadcasting
@@ -149,4 +148,5 @@ while True:
 
     # creates and individual thread for every user
     # that connects
+
     start_new_thread(clientthread,(conn,addr))
