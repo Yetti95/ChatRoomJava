@@ -23,7 +23,7 @@ while True:
     client, client_addressess = serverSocket.accept()
     #What is addressess? what does it do?
     con = Connection
-    t = threading.Thread(target=con.run, args=(client, connectionList))
+    t = threading.Thread(target=con.run, args=(client, connectionList, broad, ))
     t.start()
     #start_new_thread(target=Broadcast(connectionList)).start()
 

@@ -1,16 +1,19 @@
 import Handler
 import json
 import Broadcast
-
+import sys
 connectionsList = {'username', 'client'}
 request = json
 previousMessage = ()
 
-def run(Socket, connectionList):
+def run(Socket, connectionList, bt):
     client = Socket
     handler = Handler
     handler.__init__(handler, client)
     handler.read(handler)
+    message = handler.getMessage(handler)
+    sys.stdout.write(message)
+    sys.stdout.flush()
     username = handler.getUsername(handler)
 
     #adds our client to the list of connections
@@ -34,8 +37,8 @@ def run(Socket, connectionList):
     # I think the best way to do that is have a tuple of (username, message)
     # if (handler.getUsername(), handler.getMessage) is previousTuple then do nothing
     # else send the message to broadcast
-    #message = (handler.getUsername(handler), handler.getMessage(handler))
-    #Broadcast.setMessage(message)
+    message = (handler.getUsername(handler), handler.getMessage(handler))
+    bt.setMessage(bt, message)
 
 
 

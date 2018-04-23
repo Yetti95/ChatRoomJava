@@ -11,7 +11,6 @@ dm = ''
 message = ''
 length = 0
 date = ''
-sender = ''
 
 def __init__(self, Socket):
     self.client = Socket
@@ -36,7 +35,6 @@ def toString(self, JSON):
         else:
             if 'dm' in newMessage:
                 self.dm = newMessage['dm']
-                self.sender = newMessage['sender']
                 self.message = newMessage['message']
                 self.length = int(newMessage['length'])
                 self.date = newMessage['date']
@@ -90,11 +88,10 @@ def messageToJSON(self, username, message):
     {
         'dm' = '',
         'message' = %s,
-        'sender' = %s,
         'length' = %d,
         'date' = %s
     }
-    ''', self.message, self.sender, self.setLength(self, self.message), self.setDate(self)
+    ''', self.message, self.setLength(self, self.message), self.setDate(self)
 
     return self.toJSON(self, returnString)
 

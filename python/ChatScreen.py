@@ -15,6 +15,7 @@ Port = 1134
 username = str(sys.argv[2])
 server.connect((IP_address, Port))
 handle = Handler
+handle.__init__(handle, server)
 
 request = '''
         {
@@ -32,7 +33,6 @@ while True:
 
     # maintains a list of possible input streams
     sockets_list = [sys.stdin, server]
-
     """ There are two possible input situations. Either the
     user wants to give  manual input to send to other people,
     or the server is sending a message  to be printed on the
@@ -45,16 +45,14 @@ while True:
 
     for socks in read_sockets:
         if socks == server:
-            message = socks.recv(2048)
-            handle.toString(handle, message)
-            sys.stdout.write(handle.getSender(handle))
+            handle.read(handle)
+            sys.stdout.write(handle.getUsername(handle))
             sys.stdout.write(handle.getMessage(handle))
             sys.stdout.flush()
         else:
             message = sys.stdin.readline()
             jsonMessage = handle.messageToJSON(handle, username, message)
             server.send(jsonMessage)
-            sys.stdout.write("<You>")
-            sys.stdout.write(message)
-            sys.stdout.flush()
-server.close()
+            #sys.stdout.write("<You>")
+            #sys.stdout.write(message)
+            #sys.stdout.flush()
