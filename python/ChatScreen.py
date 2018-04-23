@@ -17,12 +17,7 @@ server.connect((IP_address, Port))
 handle = Handler
 handle.__init__(handle, server)
 
-request = '''
-        {
-            'username' : %s
-        }
-    
-    ''', username
+request = "{ 'username' : %s }", username
 temp = json.dumps(request)
 server.send(temp)
 

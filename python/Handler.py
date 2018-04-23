@@ -16,7 +16,8 @@ def __init__(self, Socket):
     self.client = Socket
 
 def read(self):
-    temp = self.client.recv(2048)
+    temp = client.recv(2048)
+    print temp
     self.toString(self, temp)
 
 def toJSON(self, String):
@@ -84,15 +85,8 @@ def setDate(self):
 def messageToJSON(self, username, message):
     self.username = username
     self.message = message
-    returnString= '''
-    {
-        'dm' = '',
-        'message' = %s,
-        'length' = %d,
-        'date' = %s
-    }
-    ''', self.message, self.setLength(self, self.message), self.setDate(self)
-
+    returnString= "{'dm' = '', 'message' = %s, 'length' = %d, 'date' = %s}", self.message, self.setLength(self, self.message), self.setDate(self)
+    print returnString
     return self.toJSON(self, returnString)
 
 
@@ -100,12 +94,7 @@ def messageToJSON(self, username, message):
 def nameTake(self):
     self.errorCode = 1
     self.isConnected = False
-    returnStatus = '''
-    {
-        'isConnected' : false,
-        'errorCode' : 1
-    }
-    '''
+    returnStatus = "{ 'isConnected' : false, 'errorCode' : 1 }"
     status = json.loads(returnStatus, 'utf-8')
     return status
 
@@ -113,15 +102,7 @@ def nameTake(self):
 
 def onJoin(self):
     self.setDate(self)
-    returnStatus = '''
-    {
-        'dm' : ,
-        'message' : '%s has entered the chat'
-        'length' : '$d'
-        'date'  :   '%s'
-        
-    }
-    ''', self.username, self.length, self.date
+    returnStatus ="{ 'dm' : , 'message' : '%s has entered the chat', 'length' : '$d', 'date'  :   '%s'}", self.username, self.length, self.date
     status = json.dumps(returnStatus)
     #should this return string or json?
     return status

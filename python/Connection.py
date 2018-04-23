@@ -54,5 +54,3 @@ def run(Socket, connectionList, bt):
 
 
     return
-
-

@@ -24,6 +24,7 @@ while True:
     #What is addressess? what does it do?
     con = Connection
     t = threading.Thread(target=con.run, args=(client, connectionList, broad, ))
+    # thread.start_new_thread(on_new_client,(c,addr))
     t.start()
     #start_new_thread(target=Broadcast(connectionList)).start()
 
@@ -32,4 +33,3 @@ while True:
 
 #if __name__ == '__main__':
 #   print 'Waiting for connections...'
-
