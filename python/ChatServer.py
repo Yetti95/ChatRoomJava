@@ -33,7 +33,7 @@ server.bind((IP_address, Port))
 
 
 server.listen(30)
-
+userConnectionsList = {}
 list_of_clients = []
 
 
@@ -52,22 +52,30 @@ def clientthread(conn, addr):
     sender = ''
     now = datetime.datetime.now()
     # sends a message to the client whose user object is conn
-    conn.send("Welcome to this chatroom!")
+    #conn.send("Welcome to this chatroom!")
 
     while True:
             try:
                 message = conn.recv(2048)
                 jsonObject = json.loads(message)
+                print str(jsonObject)
                 if 'username' in jsonObject:
                     username = jsonObject['username']
-                    if list_of_clients.__contains__(username):
-                        errorCode = 1
-                        temp = "{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode
-                        conn.send(json.dumps(temp))
-                        #conn.close()
-                    else:
-                        broadcast(json.dumps("{ 'dm' = '', 'message' = '%s has entered the chat', 'sender' = '', 'length' = '%d', 'date' = '%s' }", username, len((username + 'has entered the chat')), now.strftime("%Y-%m-%d %H:%M:%S")))
+                    userConnectionsList[username] = conn
+                    print (username + "added to list")
+                    # if list_of_clients.__contains__(username):
+                    #     errorCode = 1
+                    #     temp = json.dumps("{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode)
+                    #     conn.send(temp)
+                    #     #conn.close()
+                    # else:
+                    sys.stdout.write("%s has joined", username)
+                    sys.stdout.flush()
+                    #print("%s has joined", username)
+                    broadcast(json.dumps("{ 'dm' = '', 'message' = '%s has entered the chat', 'sender' = '', 'length' = '%d', 'date' = '%s' }", username, len((username + 'has entered the chat')), now.strftime("%Y-%m-%d %H:%M:%S")).encode('utf-8'))
                 else :
+                    print 'shit'
+                    print str(jsonObject)
                     if 'dm' in jsonObject:
                         dm = jsonObject['dm']
                         if dm is not '':
@@ -94,21 +102,23 @@ def clientthread(conn, addr):
                             remove(conn)
 
             except Exception:
+                #print "continue"
                 continue
+
 
 """Using the below function, we broadcast the message to all
 clients who's object is not the same as the one sending
 the message """
 def broadcast(message, connection):
     for clients in list_of_clients:
-        if clients!=connection:
-            try:
-                clients.send(message)
-            except:
-                clients.close()
+        #if clients!=connection:
+        try:
+            clients.send(message)
+        except:
+            clients.close()
 
-                # if the link is broken, we remove the client
-                remove(clients)
+            # if the link is broken, we remove the client
+            remove(clients)
 
 """The following function simply removes the object
 from the list that was created at the beginning of 
