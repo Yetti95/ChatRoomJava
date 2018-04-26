@@ -11,7 +11,7 @@ any two hosts The second argument is the type of socket.
 SOCK_STREAM means that data or characters are read in
 a continuous flow."""
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # checks whether sufficient arguments have been provided
 if len(sys.argv) != 1:
@@ -39,17 +39,9 @@ list_of_clients = []
 
 
 
-
 def clientthread(conn, addr):
+    sendingMessage = {}
     username = ''
-    isConnected = False
-    errorCode = 0
-    disconnected = False
-    dm = ''
-    message = ''
-    length = 0
-    date = ''
-    sender = ''
     now = datetime.datetime.now()
     # sends a message to the client whose user object is conn
     #conn.send("Welcome to this chatroom!")
@@ -58,47 +50,46 @@ def clientthread(conn, addr):
             try:
                 message = conn.recv(2048)
                 jsonObject = json.loads(message)
-                print str(jsonObject)
                 if 'username' in jsonObject:
                     username = jsonObject['username']
-                    userConnectionsList[username] = conn
-                    print (username + "added to list")
-                    # if list_of_clients.__contains__(username):
-                    #     errorCode = 1
-                    #     temp = json.dumps("{ 'isConnected' = 'False', 'errorCode' = '%d' }", errorCode)
-                    #     conn.send(temp)
-                    #     #conn.close()
-                    # else:
-                    sys.stdout.write("%s has joined", username)
-                    sys.stdout.flush()
-                    #print("%s has joined", username)
-                    broadcast(json.dumps("{ 'dm' = '', 'message' = '%s has entered the chat', 'sender' = '', 'length' = '%d', 'date' = '%s' }", username, len((username + 'has entered the chat')), now.strftime("%Y-%m-%d %H:%M:%S")).encode('utf-8'))
+                    if userConnectionsList.__contains__(username):
+                        sendingMessage['isConnected'] = False
+                        sendingMessage['errorCode'] = 1
+                    else:
+                        userConnectionsList[username] = conn
+                        print (username + " added to list")
+
+                    sendingMessage['dm'] = ''
+                    sendingMessage['message'] = '%s has entered the chat', username
+                    sendingMessage['sender'] = ''
+                    sendingMessage['length'] = len(sendingMessage['message'])
+                    sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
+                    broadcast(sendingMessage, conn)
                 else :
-                    print 'shit'
-                    print str(jsonObject)
+                    print jsonObject
                     if 'dm' in jsonObject:
-                        dm = jsonObject['dm']
-                        if dm is not '':
-                            message = jsonObject['message']
-                            sender = jsonObject['sender']
-                            if sender is '':
-                                sender = 'server'
-                            length = int(jsonObject['length'])
-                            date = jsonObject['date']
+                        sendingMessage['dm'] = jsonObject['dm']
+                        if sendingMessage['dm'] is not '':
+                            sendingMessage['message'] = jsonObject['message']
+                            sendingMessage['sender'] = jsonObject['sender']
+                            sendingMessage['length'] = int(jsonObject['length'])
+                            sendingMessage['date'] = jsonObject['date']
                             broadcast(jsonObject, conn)
                         else:
-                            message = jsonObject['message']
-                            sender = jsonObject['sender']
-                            if sender is '':
-                                sender = 'server'
-                            length = int(jsonObject['length'])
-                            date = jsonObject['date']
-                            directMessage(jsonObject, conn)
+                            sendingMessage['message'] = jsonObject['message']
+                            sendingMessage['sender'] = jsonObject['sender']
+                            sendingMessage['length'] = int(jsonObject['length'])
+                            sendingMessage['date'] = jsonObject['date']
+                            directMessage(sendingMessage, conn)
                     else:
                         if 'disconnected' in jsonObject:
-                            disconnected = jsonObject['disconnected']
-                            broadcast(("{'dm' = '', 'message' = '%s left the server', 'sender' = 'server', 'length' = '%d', 'date' = '%s}",
-                                      username, len(message), now.strftime("%Y-%m-%d %H:%M:%S")), conn)
+                            # sendingMessage['disconnected'] = jsonObject['disconnected']
+                            sendingMessage['dm'] = ''
+                            sendingMessage['message'] = '%s left the server', username
+                            sendingMessage['sender'] = ''
+                            sendingMessage['length'] = len(sendingMessage['message'])
+                            sendingMessage['date'] = now.now.strftime("%Y-%m-%d %H:%M:%S")
+                            broadcast(sendingMessage, conn)
                             remove(conn)
 
             except Exception:
@@ -124,14 +115,16 @@ def broadcast(message, connection):
 from the list that was created at the beginning of 
 the program"""
 def remove(connection):
-    if connection in list_of_clients:
-        list_of_clients.remove(connection)
+    if connection in userConnectionsList:
+        userConnectionsList.remove(connection)
 
 
 """
 This is the next thing that needs implemented. it is extra credit
 """
-def directMessage(jsonObject, conn):
+def directMessage(sendingMessage, conn):
+    for dm in sendingMessage['dm']:
+        userConnectionsList[dm].send(json.loads(sendingMessage))
     pass
 
 def setDate(self):
