@@ -64,6 +64,7 @@ def clientthread(conn, addr):
                     sendingMessage['sender'] = ''
                     sendingMessage['length'] = len(sendingMessage['message'])
                     sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
+                    conn.send(sendingMessage)
                     broadcast(sendingMessage, conn)
                 else :
                     print jsonObject

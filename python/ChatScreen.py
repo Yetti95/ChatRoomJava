@@ -2,11 +2,25 @@ import socket
 import select
 import sys
 import json
+from threading import Thread
 from thread import *
 import datetime
 
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+if len(sys.argv) != 3:
+    print "Correct usage: script, IP address, username"
+    print "Username cannot have a space"
+    exit()
 onJoin = {}
 toSend = {}
+IP_address = str(sys.argv[1])
+Port = 1134
+username = str(sys.argv[2])
+server.connect((IP_address, Port))
+server.setblocking(True)
+onJoin['username'] = username
+temp = json.dumps(onJoin)
+server.send(temp)
 
 def setDate():
     currentDatetime = datetime.datetime.now()
@@ -15,26 +29,12 @@ def setDate():
     return str(currentDatetime)
 
 
-def recieving(username, server):
+def receiving():
+    print 'receiving thread started'
     while True:
-
-        # maintains a list of possible input streams
-        sockets_list = [sys.stdin, server]
-        """ There are two possible input situations. Either the
-        user wants to give  manual input to send to other people,
-        or the server is sending a message  to be printed on the
-        screen. Select returns from sockets_list, the stream that
-        is reader for input. So for example, if the server wants
-        to send a message, then the if condition will hold true
-        below.If the user wants to send a message, the else
-        condition will evaluate as true"""
-        read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
-
-
         # Receving
         try:
             message = server.recv(2048)
-            print message
             newMessage = json.loads(message)
             if 'isConnected' in newMessage:
                 isConnected = newMessage['isConnected']
@@ -71,7 +71,8 @@ def recieving(username, server):
             continue
             #sending
 
-def sending(username, server):
+def sending():
+    print 'sending Thread started'
     while True:
         try:
             tempString = sys.stdin.read()
@@ -80,42 +81,22 @@ def sending(username, server):
                 #server.close()
                 print 'close'
             else:
-
                 print 'sending'
                 temp = {}
                 temp['dm'] = ''
                 temp['message'] = message
-                temp['sender'] =  username
+                temp['sender'] = username
                 temp['length'] = len(message)
                 temp['date'] = setDate()
                 #temp = json.loads(''''{'dm' : '', 'message' : message, 'sender' : username, 'length' : len(message), 'date' = setDate()}''')
                 obj = json.loads(temp)
                 print obj
                 server.send(obj)
-        except:
-            continue
-        #temp = "{'dm' = '', 'message' = " + message + ", 'sender' = " + username + "'length' = " + str(len(message)) + "'date' = " + str(setDate())
-        #returnString = "{'dm' = '', 'message' = %s, 'sender' = %s, length' = %d, 'date' = %s}", message, username, len(message), setDate()
-    #sys.stdout.write("<You>")
-    #sys.stdout.write(message)
-    #sys.stdout.flush()
+        except Exception as e:
+            print(e)
 
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-if len(sys.argv) != 3:
-    print "Correct usage: script, IP address, username"
-    print "Username cannot have a space"
-    exit()
-"""
-Write two threads for the client that way you can read and write at the same time
-"""
-IP_address = str(sys.argv[1])
-Port = 1134
-username = str(sys.argv[2])
-server.connect((IP_address, Port))
-server.setblocking(True)
-onJoin['username'] = username
-temp = json.dumps(onJoin)
-server.send(temp)
-start_new_thread(sending,(username,server))
-start_new_thread(recieving,(username,server))
+sendingThread = Thread(target=sending)
+recievingThread = Thread(target=receiving)
+sendingThread.start()
+recievingThread.start()
