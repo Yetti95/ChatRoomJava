@@ -52,7 +52,8 @@ def clientthread(conn, addr):
                 jsonObject = json.loads(message)
                 if 'username' in jsonObject:
                     username = jsonObject['username']
-                    if userConnectionsList.__contains__(username):
+                    if username in userConnectionsList:
+                        print "Username exists"
                         sendingMessage['isConnected'] = False
                         sendingMessage['errorCode'] = 1
                     else:
@@ -75,13 +76,15 @@ def clientthread(conn, addr):
                             sendingMessage['sender'] = jsonObject['sender']
                             sendingMessage['length'] = int(jsonObject['length'])
                             sendingMessage['date'] = jsonObject['date']
-                            broadcast(jsonObject, conn)
+                            conn.send(json.dumps(sendingMessage))
+                            directMessage(sendingMessage, conn)
                         else:
                             sendingMessage['message'] = jsonObject['message']
                             sendingMessage['sender'] = jsonObject['sender']
                             sendingMessage['length'] = int(jsonObject['length'])
                             sendingMessage['date'] = jsonObject['date']
-                            directMessage(sendingMessage, conn)
+                            conn.send(sendingMessage)
+                            broadcast(jsonObject, conn)
                     else:
                         if 'disconnected' in jsonObject:
                             # sendingMessage['disconnected'] = jsonObject['disconnected']
@@ -102,18 +105,18 @@ def clientthread(conn, addr):
 clients who's object is not the same as the one sending
 the message """
 def broadcast(message, connection):
-    for clients in list_of_clients:
+    for username in userConnectionsList:
         #if clients!=connection:
         try:
-            clients.send(message)
+            userConnectionsList[username].send(message)
         except:
-            clients.close()
+            userConnectionsList[username].close()
 
             # if the link is broken, we remove the client
-            remove(clients)
+            remove(username)
 
 """The following function simply removes the object
-from the list that was created at the beginning of 
+from the list that was created at the beginning of
 the program"""
 def remove(connection):
     if connection in userConnectionsList:
@@ -138,9 +141,9 @@ def setDate(self):
     second = datetime.time.second
 while True:
 
-    """Accepts a connection request and stores two parameters, 
-    conn which is a socket object for that user, and addr 
-    which contains the IP address of the client that just 
+    """Accepts a connection request and stores two parameters,
+    conn which is a socket object for that user, and addr
+    which contains the IP address of the client that just
     connected"""
 
     conn, addr = server.accept()

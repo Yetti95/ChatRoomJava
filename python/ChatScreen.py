@@ -36,6 +36,7 @@ def receiving():
         try:
             message = server.recv(2048)
             newMessage = json.loads(message)
+            print "New message: ", newMessage
             if 'isConnected' in newMessage:
                 isConnected = newMessage['isConnected']
                 errorCode = newMessage['errorCode']
@@ -61,7 +62,7 @@ def receiving():
                 length = int(newMessage['length'])
                 date = newMessage['date']
                 # print '<%s> %s\n', sender, message
-                sys.stdout.write(sender)
+                sys.stdout.write(sender + ": ")
                 sys.stdout.write(message)
                 sys.stdout.flush()
             else:
@@ -75,11 +76,12 @@ def sending():
     print 'sending Thread started'
     while True:
         try:
-            tempString = sys.stdin.read()
+            tempString = sys.stdin.readline()
             message = str(tempString)
             if message is 'exit()':
-                #server.close()
                 print 'close'
+                server.close()
+                break
             else:
                 print 'sending'
                 temp = {}
@@ -89,14 +91,23 @@ def sending():
                 temp['length'] = len(message)
                 temp['date'] = setDate()
                 #temp = json.loads(''''{'dm' : '', 'message' : message, 'sender' : username, 'length' : len(message), 'date' = setDate()}''')
-                obj = json.loads(temp)
-                print obj
+                obj = json.dumps(temp)
+                # print obj
                 server.send(obj)
-        except Exception as e:
-            print(e)
 
+        except:
+            continue
+    exit()
+
+def test():
+    while True:
+        server.send("HI")
 
 sendingThread = Thread(target=sending)
 recievingThread = Thread(target=receiving)
-sendingThread.start()
-recievingThread.start()
+try:
+    sendingThread.start()
+    recievingThread.start()
+except (KeyboardInterrupt, SystemExit):
+    cleanup_stop_thread()
+    sys.exit()
