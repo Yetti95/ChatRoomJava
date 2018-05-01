@@ -59,32 +59,33 @@ def clientthread(conn, addr):
                     else:
                         userConnectionsList[username] = conn
                         print (username + " added to list")
-
-                    sendingMessage['dm'] = ''
-                    sendingMessage['message'] = '%s has entered the chat', username
-                    sendingMessage['sender'] = ''
-                    sendingMessage['length'] = len(sendingMessage['message'])
-                    sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
-                    conn.send(sendingMessage)
-                    broadcast(sendingMessage, conn)
+                        sendingMessage['dm'] = ''
+                        sendingMessage['message'] = '%s has entered the chat', username
+                        sendingMessage['sender'] = ''
+                        sendingMessage['length'] = len(sendingMessage['message'])
+                        sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
+                        # conn.send(json.dumps(sendingMessage))
+                        broadcast(json.dumps(sendingMessage), conn)
                 else :
-                    print jsonObject
+                    # print "Json object: ", jsonObject
                     if 'dm' in jsonObject:
                         sendingMessage['dm'] = jsonObject['dm']
-                        if sendingMessage['dm'] is not '':
+                        # print "moves into if statement", jsonObject['dm']
+                        if sendingMessage['dm'] is '':
                             sendingMessage['message'] = jsonObject['message']
                             sendingMessage['sender'] = jsonObject['sender']
                             sendingMessage['length'] = int(jsonObject['length'])
                             sendingMessage['date'] = jsonObject['date']
-                            conn.send(json.dumps(sendingMessage))
-                            directMessage(sendingMessage, conn)
+                            # conn.send(json.dumps(sendingMessage))
+                            broadcast(json.dumps(sendingMessage), conn)
                         else:
                             sendingMessage['message'] = jsonObject['message']
                             sendingMessage['sender'] = jsonObject['sender']
                             sendingMessage['length'] = int(jsonObject['length'])
                             sendingMessage['date'] = jsonObject['date']
-                            conn.send(sendingMessage)
-                            broadcast(jsonObject, conn)
+                            # print "sending message: ", sendingMessage
+                            # conn.send(json.dumps(sendingMessage))
+                            broadcast(json.dumps(sendingMessage), conn)
                     else:
                         if 'disconnected' in jsonObject:
                             # sendingMessage['disconnected'] = jsonObject['disconnected']
@@ -108,7 +109,9 @@ def broadcast(message, connection):
     for username in userConnectionsList:
         #if clients!=connection:
         try:
-            userConnectionsList[username].send(message)
+            if userConnectionsList[username] is not connection:
+                userConnectionsList[username].send(message)
+            # print "Sent", message
         except:
             userConnectionsList[username].close()
 

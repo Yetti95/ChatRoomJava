@@ -36,7 +36,7 @@ def receiving():
         try:
             message = server.recv(2048)
             newMessage = json.loads(message)
-            print "New message: ", newMessage
+            # print "New message: ", newMessage
             if 'isConnected' in newMessage:
                 isConnected = newMessage['isConnected']
                 errorCode = newMessage['errorCode']
@@ -83,7 +83,7 @@ def sending():
                 server.close()
                 break
             else:
-                print 'sending'
+                # print 'sending'
                 temp = {}
                 temp['dm'] = ''
                 temp['message'] = message
