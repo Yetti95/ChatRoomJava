@@ -56,11 +56,13 @@ def clientthread(conn, addr):
                         print "Username exists"
                         sendingMessage['isConnected'] = False
                         sendingMessage['errorCode'] = 1
+                        conn.send(json.dumps(sendingMessage))
+                        conn.close()
                     else:
                         userConnectionsList[username] = conn
                         print (username + " added to list")
                         sendingMessage['dm'] = ''
-                        sendingMessage['message'] = '%s has entered the chat', username
+                        sendingMessage['message'] = '%s has entered the chat'% username
                         sendingMessage['sender'] = ''
                         sendingMessage['length'] = len(sendingMessage['message'])
                         sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -89,13 +91,15 @@ def clientthread(conn, addr):
                     else:
                         if 'disconnected' in jsonObject:
                             # sendingMessage['disconnected'] = jsonObject['disconnected']
+                            username = jsonObject['sender']
                             sendingMessage['dm'] = ''
                             sendingMessage['message'] = '%s left the server', username
-                            sendingMessage['sender'] = ''
+                            sendingMessage['sender'] = 'Server'
                             sendingMessage['length'] = len(sendingMessage['message'])
                             sendingMessage['date'] = now.now.strftime("%Y-%m-%d %H:%M:%S")
                             broadcast(sendingMessage, conn)
-                            remove(conn)
+                            remove(username)
+                            conn.close()
 
             except Exception:
                 #print "continue"
@@ -121,9 +125,10 @@ def broadcast(message, connection):
 """The following function simply removes the object
 from the list that was created at the beginning of
 the program"""
-def remove(connection):
-    if connection in userConnectionsList:
-        userConnectionsList.remove(connection)
+def remove(username):
+    if username in userConnectionsList:
+        userConnectionsList.remove(username)
+
 
 
 """
