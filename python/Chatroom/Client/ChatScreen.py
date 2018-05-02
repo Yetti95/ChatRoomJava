@@ -52,7 +52,11 @@ def receiving():
                 length = int(newMessage['length'])
                 date = newMessage['date']
                 # jsonMessage = server.recv(2048)
-                messageList.insert(END, '<%s>: %s\n' % (sender, message))
+                if dm is not '':
+                    messageList.insert(END, '<%s>: %s\n' % (sender, message), fg='red')
+                else:
+                    messageList.insert(END, '<%s>: %s\n' % (sender, message), fg='black')
+
         except:
             continue
 
@@ -70,41 +74,41 @@ def onDisconnect():
     server.send(json.dumps({'disconnect': True, 'sender' : username}))
     window.destroy()
     server.close()
-    exit()
     sys.exit()
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# server.connect(('yetti.hopto.org',1134))
-server.connect(('localhost',1134))
+server.connect((sys.argv[2], 1134))
+# server.connect(('localhost',1134))
 
 window = Tk()
 window.title("Cool Chat Room Name")
 frame = Frame(window)
-scrollbar= Scrollbar(frame)
+scrollbar= Scrollbar(window)
 
 
-messageList = Listbox(frame,height=15, width=50, yscrollcommand=scrollbar.set)
-scrollbar.pack(side=RIGHT, fill=Y)
+messageList = Listbox(window, yscrollcommand=scrollbar.set)
 messageList.pack(side=LEFT, fill=BOTH)
-messageList.pack()
+scrollbar.pack(side=LEFT, fill=Y)
 
-frame.pack()
-
-labelDMText=StringVar()
-labelDMText.set("DM:")
-labelDM = Label(window, textvariable=labelDMText)
-inputDM = StringVar()
-inputDMField = Entry(window, textvariable=inputDM)
-labelDM.pack(side=LEFT)
-inputDMField.pack(side=LEFT)
+# frame.pack(side=TOP, fill=BOTH)
 
 messageLabelText = StringVar()
 messageLabelText.set("Message:")
 messageLabel = Label(window, textvariable=messageLabelText)
 input_user = StringVar()
 input_field = Entry(window, textvariable=input_user)
-messageLabel.pack(side=LEFT)
-input_field.pack(side=LEFT)
+messageLabel.pack(side=BOTTOM)
+input_field.pack(side=BOTTOM, fill=X)
+
+labelDMText=StringVar()
+labelDMText.set("DM:")
+labelDM = Label(window, textvariable=labelDMText)
+inputDM = StringVar()
+inputDMField = Entry(window, textvariable=inputDM)
+inputDMField.pack(side=BOTTOM, fill=X)
+labelDM.pack(side=BOTTOM)
+
+
 
 input_field.bind("<Return>", sending)
 

@@ -96,7 +96,7 @@ def clientthread(conn, addr):
                             sendingMessage['message'] = '%s left the server', username
                             sendingMessage['sender'] = 'Server'
                             sendingMessage['length'] = len(sendingMessage['message'])
-                            sendingMessage['date'] = now.now.strftime("%Y-%m-%d %H:%M:%S")
+                            sendingMessage['date'] = now.strftime("%Y-%m-%d %H:%M:%S")
                             broadcast(sendingMessage, conn)
                             remove(username)
                             conn.close()
