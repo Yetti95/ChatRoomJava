@@ -9,7 +9,7 @@ from threading import Thread
 
 
 
-username = str(sys.argv[1])
+username = str(sys.argv[2])
 
 
 
@@ -77,7 +77,7 @@ def onDisconnect():
     sys.exit()
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.connect((sys.argv[2], 1134))
+server.connect((sys.argv[1], 1134))
 # server.connect(('localhost',1134))
 
 window = Tk()
