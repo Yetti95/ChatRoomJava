@@ -1,3 +1,10 @@
 
 *.class
 *.prefs
+*.xml
+*.iml
+*.pyc
+*.pyc
+*.pyc
+*.pyc
+python/.DS_Store
